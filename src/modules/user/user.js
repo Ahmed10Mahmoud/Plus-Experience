@@ -3,10 +3,10 @@
 
 import express from "express";
 const router = express.Router();
-import verifyRole from '../middlewares/verifyRoles.js';
-import rolesList from '../config/roleslist.js';
+import verifyRole from '../../middlewares/verifyRoles.js';
+import rolesList from '../../../config/roleslist.js';
 import upload from '../middlewares/multer';
-import { addSkill, deleteSkill, modifySkill } from "../controllers/userController.js";
+import { addSkill, deleteSkill, modifySkill } from "./controller/usercontroller.js";
 
 //Show profile , show user 
 router.get('/', verifyRole(rolesList.Admin, rolesList.Freelancer), userController.showProfile);

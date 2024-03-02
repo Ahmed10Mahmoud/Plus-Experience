@@ -19,6 +19,12 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+  isConfirmed:{
+    type:Boolean,
+    default:false
+  },
+  activationCode:String,
+  forgetCode:String,
   img: {
     type: String,
     required: false

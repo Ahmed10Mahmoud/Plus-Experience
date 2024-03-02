@@ -1,7 +1,7 @@
 // controllers/conversationController.js
 
-import Conversation from '../model/conversation.model.js';
-import User from '../model/usermodel.js'; // Import your User model
+import Conversation from '../../../../db/model/conversation.model.js';
+import User from '../../../../db/model/usermodel.js'; // Import your User model
 
 // Controller function for creating conversations
 export const createConversation = async (req, res) => {
