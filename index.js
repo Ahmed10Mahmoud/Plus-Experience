@@ -3,13 +3,15 @@ import cookieParser from "cookie-parser";
 const PORT = process.env.PORT || 3500
 const app = express();
 import jwt from 'jsonwebtoken';
-import  connectDB  from './config/dbconnection.js';
+import  connectDB  from './db/dbconnection.js';
 import mongoose from'mongoose';
-import Auth from './routes/auth.js'
-import adminRouter from './routes/admin.js'
-import clientRouter from './routes/client.js'
-import conversationRouter from "./routes/conversation.js";
-import messageRouter from "./routes/message.js"
+import Auth from './src/modules/auth/auth.js'
+import adminRouter from './src/modules/user/admin.js'
+import clientRouter from './src/modules/user/client.js'
+import conversationRouter from "./src/modules/conversation/conversation.js";
+import messageRouter from "./src/modules/message/message.js"
+import dotenv from 'dotenv';
+dotenv.config();
 // Connect to DB
 connectDB();
 // Built in middlewares
@@ -27,6 +29,7 @@ app.use("/auth", Auth);
 
 
 // Verifing JWT
+
 app.use(function (req, res, next) {
     const token = req.cookies.jwt;
     if (token) {

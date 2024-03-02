@@ -1,9 +1,9 @@
 // postRoutes.js
 
 import express from 'express';
-import Post from '../model/post.model.js';
-import { addPost, getPost,deletePosts, getOwnPosts,getAllPosts, filterPosts } from '../controllers/clientcontroller.js';
-import {verifyRoles} from '../middlewares/verifyRoles.js';
+//import Post from '../model/post.model.js';
+import { addPost, getPost,deletePosts, getOwnPosts,getAllPosts, filterPosts } from './controller/clientcontroller.js';
+import {verifyRoles} from '../../middlewares/verifyRoles.js';
 const router = express.Router();
 
 // Create post route

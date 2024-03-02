@@ -1,0 +1,26 @@
+# Dependency directories
+node_modules/
+
+# Environment variables file (if using dotenv or similar)
+.env
+
+# IDE/Editor specific files
+.vscode/
+.idea/
+*.sublime-*
+
+# Logs
+logs/
+*.log
+
+# Build output
+/build/
+/dist/
+
+# OS and system-specific files
+.DS_Store
+Thumbs.db
+
+# Backup files
+*.bak
+*.backup

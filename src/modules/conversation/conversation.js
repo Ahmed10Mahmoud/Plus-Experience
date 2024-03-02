@@ -2,7 +2,7 @@
 
 
 import express from 'express';
-import { createConversation, getConversation } from '../controllers/conversation.js';
+import { createConversation, getConversation } from './controller/conversationcontroller.js';
 const router = express.Router();
 
 router.post('/create',createConversation)

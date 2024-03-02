@@ -1,7 +1,7 @@
 import express from 'express';
 const router = express.Router();
-import {deleteUser} from '../controllers/admincontroller.js';
-import {verifyRoles} from '../middlewares/verifyRoles.js';
+import {deleteUser} from './controller/admincontroller.js';
+import {verifyRoles} from '../../middlewares/verifyRoles.js';
 //import {ROLES_LIST} from '../config/roleslist.js';
 
 
