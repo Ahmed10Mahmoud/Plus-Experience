@@ -6,7 +6,7 @@ import { activateSchema, loginSchema, registerSchema } from "./controller/user.v
 import { isValid } from "../../middlewares/validation.middleware.js";
 
 // new register 
-router.post("/register",isValid(registerSchema),register)
+router.post("/register",register)
 
 router.get('/confirmEmail/:activationCode',isValid(activateSchema),activateAccount)
 // Login
