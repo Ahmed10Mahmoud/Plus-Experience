@@ -1,12 +1,13 @@
-import User from '../model/usermodel';
+import userModel from '../../../../db/model/usermodel.js';
 import bcrypt from "bcrypt";
+import cloudinary from "../../../../config/cloudinary.js";
 
 export const showProfile = async (req, res) => {
     const id = req.id;
     if (!id) {
         res.status(440).json({ "msg": "Your Session has Expired" });
     }
-    const foundUser = await User.findOne({ _id: id });
+    const foundUser = await userModel.findOne({ _id: id });
     foundUser.password = undefined;
     foundUser._id = null;
     console.log(foundUser);
@@ -23,7 +24,7 @@ export const updateProfile = async (req, res) => {
         res.status(400).json({ "msg": "Id and updates are required!" });
     }
     else {
-        const foundUser = await User.findOne({ _id: id });
+        const foundUser = await userModel.findOne({ _id: id });
         try {
             if (updates.username) foundUser.userName = updates.username;
             if (updates.password) {
@@ -58,17 +59,23 @@ export const updateProfile = async (req, res) => {
 };
 
 export const uploadImage = async (req, res) => {
-    const extention = req.file.originalname.split('.').pop();
-    console.log(extention);
-    if (extention !== "jpg" && extention !== "png") {
-        await fs.unlink(req.file.path, (err) => {
-            if (err) {
-                console.log(err.message);
-            }
-        });
-        res.status(415).json({ "msg": "Please upload an image with jpg or png extention." });
+    const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: `Users/${req.id}` });//Add a profile for every user
+    //Add profile image to user DB
+    try {
+        const user = await userModel.findByIdAndUpdate(
+            req.id,
+            {
+                img: { secure_url, public_id }
+            },
+            { new: true }
+        );
+        console.log(user);
+        res.json({ "file": req.file, "user": user });
     }
-    else res.json(req.file);
+    catch (err) {
+        console.log(err.message);
+        res.sendStatus(500);
+    }
 };
 
 export const addSkill = async (req, res) => {
@@ -79,10 +86,10 @@ export const addSkill = async (req, res) => {
     else {
         if (!skills) { res.status(400).json({ "msg": "Please enter the new skills" }); }
         else {
-            const foundUser = await User.findOne({ _id: userId });
+            const foundUser = await userModel.findOne({ _id: userId });
             foundUser.skills = await foundUser.skills.concat(skills);
             const result = await foundUser.save()
-           // console.log(result)
+            // console.log(result)
             foundUser.password = undefined;
             foundUser._id = null;
             res.status(201).json({ "user": foundUser });
@@ -97,7 +104,7 @@ export const deleteSkill = async (req, res) => {
     else {
         if (!skillName) { res.status(400).json({ "msg": "Please choose the skill" }); }
         else {
-            const foundUser = await User.findOne({ _id: userId });
+            const foundUser = await userModel.findOne({ _id: userId });
             if (!foundUser.skills.includes(skillName)) { res.status(404).json({ "msg": "You have not this skill!" }); }
             else {
                 const skillIndex = await foundUser.skills.indexOf(skillName);
@@ -120,7 +127,7 @@ export const modifySkill = async (req, res) => {
     else {
         if (!oldSkill || !newSkill) { res.status(400).json({ "msg": "Please choose the old skill and type the new one" }); }
         else {
-            const foundUser = await User.findOne({ _id: userId });
+            const foundUser = await userModel.findOne({ _id: userId });
             const skillIndex = await foundUser.skills.indexOf(oldSkill);
             foundUser.skills[skillIndex] = newSkill;
             const result = await foundUser.save();
