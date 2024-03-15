@@ -128,3 +128,32 @@ export const filterPosts = async (req, res) => {
     res.status(500).json({ message: 'Internal server error!' });
   }
 };
+
+export const updatePost = async (req, res) => {
+  try {
+    const postId = req.params.postId;
+    const updateFields = req.body;
+
+
+    // Find the post by ID
+    let post = await Post.findById(postId);
+
+    // Check if the post exists
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+
+    // Check if the authenticated user is the owner of the post
+    if (!post.owner.equals(req.id)) {
+      return res.status(403).json({ message: 'You can update your own posts only' });
+    }
+
+    // Update the post with the new fields
+    post = await Post.findByIdAndUpdate(postId, updateFields, { new: true });
+
+    res.status(200).json(post);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
