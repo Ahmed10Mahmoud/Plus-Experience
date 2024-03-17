@@ -4,30 +4,30 @@ import Post from '../../../../db/model/postmodel.js';
 export const addPost = async (req, res) => {
   try {
     // Extract data from the request body
-    const { title, description, category, imgs, cover, shortTitle, shortDisc, deliveryTime, revisionNumber, requiremnets, maxNumOfFreelancer, attachments } = req.body;
-    console.log({ title, description, category, imgs, cover, shortTitle, shortDisc, deliveryTime, revisionNumber, requiremnets, maxNumOfFreelancer })
-    // Create a new post instance with extracted data
-    const newPost = new Post({
-      title,
-      description,
-      category,
-      imgs,
-      cover,
-      shortTitle,
-      shortDisc,
-      deliveryTime,
-      revisionNumber,
-      requiremnets,
-      maxNumOfFreelancer,
-      attachments,
-      owner: req.id
-    });
+    const { title, description, category, imgs, cover, shortTitle, shortDisc, deliveryTime, requiremnets, attachments } = req.body;
+    console.log({ title, description, category, imgs, cover, shortTitle, shortDisc, deliveryTime, requiremnets })
+    if (!title || !description || !category || !shortTitle || !shortDisc || !deliveryTime || !requiremnets) {
+      res.status(400).json({ "msg": "Please fill all fields!" });
+    }
+    else {
+      // Create a new post instance with extracted data
+      const newPost = new Post({
+        title,
+        description,
+        category,
+        shortTitle,
+        shortDisc,
+        deliveryTime,
+        requiremnets,
+        owner: req.id
+      });
 
-    // Save the new post to the database
-    await newPost.save();
+      // Save the new post to the database
+      await newPost.save();
 
-    // Send a response indicating successful creation
-    res.status(201).json(newPost);
+      // Send a response indicating successful creation
+      res.status(201).json(newPost);
+    }
   } catch (error) {
     // Handle errors
     console.error(error);

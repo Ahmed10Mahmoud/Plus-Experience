@@ -20,7 +20,7 @@ const postSchema = new Schema({
   },
   cover: {
     type: String,
-    required: true
+    required: false
   },
   shortTitle: {
     type: String,
@@ -34,17 +34,17 @@ const postSchema = new Schema({
     type: Number,
     required: true
   },
-  revisionNumber: {
-    type: Number,
-    required: true
-  },
   requiremnets: {
     type: [String],
-    required: false
+    required: true
   },
-  maxNumOfFreelancer: {
-    type: Number,
-    max: 5,
+  joinedFreelancers: {
+    maxNumber: { type: Number, max: 5 },
+    freelancersIdList: [String],
+    waitingList: [String],
+  },
+  deadline: {
+    type: Date
   },
   attachments: {
     secure_url: String,

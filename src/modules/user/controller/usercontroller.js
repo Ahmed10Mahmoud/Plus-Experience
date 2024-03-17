@@ -1,6 +1,7 @@
 import userModel from '../../../../db/model/usermodel.js';
 import bcrypt from "bcrypt";
 import cloudinary from "../../../../config/cloudinary.js";
+import postModel from '../../../../db/model/postmodel.js';
 
 export const showProfile = async (req, res) => {
     const id = req.id;
@@ -141,3 +142,28 @@ export const modifySkill = async (req, res) => {
 
 };
 
+export const apply = async (req, res) => {
+    const freelancerId = req.id;
+    const postId = req.params.id;
+    try {
+        if (!freelancerId) { res.status(401).json({ "msg": "You are not authorized!" }); }
+        else if (!postId) { res.status(409).json({ "msg": "The author deleted the post!" }); }
+        else {
+            const currentPost = await postModel.findOne({ _id: postId });
+            if (!currentPost) { res.status(404).json({ "msg": "The author deleted the post!" }); }
+            else {
+                if (currentPost.joinedFreelancers.waitingList.includes(freelancerId)) {
+                    res.status(409).json({ "msg": "You are already in the waiting list!" });
+                }
+                else {
+                    await currentPost.joinedFreelancers.waitingList.push(freelancerId);
+                    currentPost.save();
+                    res.status(200).json({ "msg": "You have been added to the waiting list!" });
+                }
+            }
+        }
+    }
+    catch (err) {
+        console.log(err.message);
+    }
+};

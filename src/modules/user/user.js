@@ -7,6 +7,7 @@ import FILE_LIST from "../../../config/filelist.js";
 import { verifyFile } from "../../middlewares/verifyfile.js";
 import {
     addSkill,
+    apply,
     deleteSkill,
     modifySkill,
     showProfile,
@@ -29,4 +30,6 @@ router.patch('/skill/add', verifyRoles(rolesList.Admin, rolesList.Freelancer), a
 router.patch('/skill/delete', verifyRoles(rolesList.Admin, rolesList.Freelancer), deleteSkill);
 router.patch('/skill/update', verifyRoles(rolesList.Admin, rolesList.Freelancer), modifySkill);
 //Files
+//Apply to a post
+router.patch('/apply/:id', verifyRoles(rolesList.Freelancer), apply);
 export default router;
