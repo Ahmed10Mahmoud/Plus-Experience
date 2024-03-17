@@ -22,7 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(cookieParser());
 
-app.use(showMethod); //Show method
+app.use(showMethod);  //Show method
 app.use("/auth", Auth);
 app.use(verifyToken); //Verifing JWT
 app.use("/admin", adminRouter);
