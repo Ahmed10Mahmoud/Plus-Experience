@@ -10,7 +10,7 @@ import { connect } from "http2";
 const maxAge = 3 * 24 * 60 * 60;
 
 export const createToken = (id, role) => {
-    return jwt.sign({ "id": id, "role": role }, 'salah', {
+    return jwt.sign({ "id": id, "role": role }, 'salah&ahmed', {
         expiresIn: maxAge
     });
 };
