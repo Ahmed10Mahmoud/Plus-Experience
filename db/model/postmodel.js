@@ -19,8 +19,8 @@ const postSchema = new Schema({
     required: false
   },
   cover: {
-    type: String,
-    required: false
+    secure_url: String,
+    public_id: String
   },
   shortTitle: {
     type: String,
