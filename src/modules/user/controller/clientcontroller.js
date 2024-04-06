@@ -1,5 +1,6 @@
 import Post from '../../../../db/model/postmodel.js';
-
+import cloudinary from "../../../../config/cloudinary.js";
+import postModel from '../../../../db/model/postmodel.js';
 
 export const addPost = async (req, res) => {
   try {
@@ -155,5 +156,42 @@ export const updatePost = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+export const uploadCover = async (req, res) => {
+  const postId = req.params.postId;
+  if (!postId) { res.status(440).json({ 'msg': 'Something went wrong' }); }
+  else {
+    const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: `Posts/${postId}/Cover` });
+    //Add cover image to post DB
+    try {
+      const post = await postModel.findByIdAndUpdate(
+        postId,
+        {
+          cover: { secure_url, public_id }
+        },
+        { new: true }
+      );
+      console.log(post);
+      res.json({ "file": req.file, "post": post });
+    }
+    catch (err) {
+      console.log(err.message);
+      res.sendStatus(500);
+    }
+  }
+};
+
+export const applyCount = async (req, res) => {
+  const postId = req.params.postId;
+  if (!postId) { res.status(400).json({ 'msg': 'Something went wrong!' }); }
+  else {
+    const post = await postModel.findById(postId);
+    if (!post) { res.status(404).json({ 'msg': 'Post not found!' }); }
+    else {
+      const Count = post.joinedFreelancers.waitingList.length;
+      res.status(200).json({ 'Count': Count });
+    }
   }
 };
