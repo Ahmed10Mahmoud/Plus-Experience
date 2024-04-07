@@ -14,10 +14,6 @@ const postSchema = new Schema({
     type: String,
     required: true
   },
-  imgs: {
-    type: [String],
-    required: false
-  },
   cover: {
     secure_url: String,
     public_id: String
@@ -34,7 +30,7 @@ const postSchema = new Schema({
     type: Number,
     required: true
   },
-  requiremnets: {
+  requirements: {
     type: [String],
     required: true
   },
