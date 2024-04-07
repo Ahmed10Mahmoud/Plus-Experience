@@ -5,13 +5,15 @@ import postModel from '../../../../db/model/postmodel.js';
 export const addPost = async (req, res) => {
   try {
     // Extract data from the request body
-    const { title, description, category, imgs, cover, shortTitle, shortDisc, deliveryTime, requiremnets, attachments } = req.body;
-    console.log({ title, description, category, imgs, cover, shortTitle, shortDisc, deliveryTime, requiremnets })
-    if (!title || !description || !category || !shortTitle || !shortDisc || !deliveryTime || !requiremnets) {
+    let { title, description, category, imgs, cover, shortTitle, shortDisc, deliveryTime, requirements, attachments } = req.body;
+    console.log({ title, description, category, imgs, cover, shortTitle, shortDisc, deliveryTime, requirements })
+    if (!title || !description || !category || !shortTitle || !shortDisc || !deliveryTime || !requirements) {
       res.status(400).json({ "msg": "Please fill all fields!" });
     }
     else {
-      // Create a new post instance with extracted data
+      //Split requirements into array
+      requirements = requirements.split(", ");
+      //Create a new post instance with extracted data
       const newPost = new Post({
         title,
         description,
@@ -19,18 +21,23 @@ export const addPost = async (req, res) => {
         shortTitle,
         shortDisc,
         deliveryTime,
-        requiremnets,
+        requirements,
         owner: req.id
       });
-
-      // Save the new post to the database
+      if (req.file) {
+        const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: `Posts/${newPost.id}/Cover` });
+        newPost.cover = { secure_url, public_id };
+      }
+      //Save the new post to the database
       await newPost.save();
 
-      // Send a response indicating successful creation
+      //Send a response indicating successful creation
       res.status(201).json(newPost);
+
+
     }
   } catch (error) {
-    // Handle errors
+    //Handle errors
     console.error(error);
     res.status(500).json({ message: 'Internal server error!' });
   }

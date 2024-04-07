@@ -8,8 +8,12 @@ import { verifyFile } from "../../middlewares/verifyfile.js";
 
 const router = express.Router();
 
-// Create post route
-router.post('/addpost', verifyRoles('client'), addPost);
+//Add post route
+router.post('/addpost',
+    verifyRoles('client'),
+    upload.single('file'),
+    verifyFile(FILE_LIST.image),
+    addPost);
 
 // Get all posts route
 router.get('/showpost/:postId', getPost)
