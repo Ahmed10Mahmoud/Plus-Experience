@@ -14,10 +14,12 @@ import projectRouter from './src/modules/project/project.js';
 import dotenv from 'dotenv';
 import { verifyToken } from "./src/middlewares/verifyToken.js";
 import { showMethod } from "./src/middlewares/showmethod.js";
-dotenv.config();
+import cors from "cors"; // Import CORS packagedotenv.config();
+import { corsOptions } from "./config/corsOptions.js";
 // Connect to DB
 connectDB();
 // Built in middlewares
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(cookieParser());
