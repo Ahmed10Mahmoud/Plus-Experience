@@ -5,9 +5,9 @@ import postModel from '../../../../db/model/postmodel.js';
 export const addPost = async (req, res) => {
   try {
     // Extract data from the request body
-    let { title, description, category, imgs, cover, shortTitle, shortDisc, deliveryTime, requirements, attachments } = req.body;
-    console.log({ title, description, category, imgs, cover, shortTitle, shortDisc, deliveryTime, requirements })
-    if (!title || !description || !category || !shortTitle || !shortDisc || !deliveryTime || !requirements) {
+    let { title, description, category, requirements } = req.body;
+    console.log({ title, description, category, requirements })
+    if (!title || !description || !category || !requirements) {
       res.status(400).json({ "msg": "Please fill all fields!" });
     }
     else {
@@ -18,9 +18,6 @@ export const addPost = async (req, res) => {
         title,
         description,
         category,
-        shortTitle,
-        shortDisc,
-        deliveryTime,
         requirements,
         owner: req.id
       });

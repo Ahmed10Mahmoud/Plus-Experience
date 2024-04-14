@@ -18,18 +18,6 @@ const postSchema = new Schema({
     secure_url: String,
     public_id: String
   },
-  shortTitle: {
-    type: String,
-    required: true
-  },
-  shortDisc: {
-    type: String,
-    required: true
-  },
-  deliveryTime: {
-    type: Number,
-    required: true
-  },
   requirements: {
     type: [String],
     required: true
