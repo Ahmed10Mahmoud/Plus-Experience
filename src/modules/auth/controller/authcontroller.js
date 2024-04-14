@@ -82,7 +82,7 @@ export const login = async (req, res) => {
 
             res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
             // Response
-            res.status(200).json({ "msg": "Loged in successfully!" });
+            res.status(200).json({ "jwt": token });
         }
         else {
             res.status(401).json({ "msg": "Enter the correct email and password" });
