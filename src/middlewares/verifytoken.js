@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 export function verifyToken(req, res, next) {
-    const token = req.cookies.jwt;
+    //const token = req.cookies.jwt;
+    const token = req.headers.authorization && req.headers.authorization.split(' ')[1]; // Extract token from Authorization header
     if (token) {
         jwt.verify(token, 'salah&ahmed', async (err, decodedToken) => {
             if (err) {

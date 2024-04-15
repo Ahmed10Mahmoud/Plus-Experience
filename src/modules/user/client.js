@@ -21,9 +21,9 @@ router.get('/getAllPosts', getAllPosts)
 router.get('/search', filterPosts)
 //get own posts
 router.get('/ownposts', verifyRoles('client'), getOwnPosts)
-//
+//Update post
 router.put('/updatePost/:postId', updatePost)
-// Delete post route
+//Delete post route
 router.delete('/deletepost/:postId', verifyRoles('client'), deletePosts)
 //Set post cover img
 router.patch('/cover/add/:postId',
@@ -33,4 +33,5 @@ router.patch('/cover/add/:postId',
     uploadCover);
 //Show apply count
 router.get('/applycount/:postId', verifyRoles(rolesList.Client), applyCount);
+//Show profile
 export default router;

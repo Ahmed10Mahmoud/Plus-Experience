@@ -15,8 +15,8 @@ const postSchema = new Schema({
     required: true
   },
   cover: {
-    secure_url: String,
-    public_id: String
+    secure_url: { type: String },
+    public_id: { type: String }
   },
   requirements: {
     type: [String],

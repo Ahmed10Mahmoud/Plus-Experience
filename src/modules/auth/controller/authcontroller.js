@@ -80,9 +80,9 @@ export const login = async (req, res) => {
             const saved = await foundUser.save();
             console.log(saved);
 
-            res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
+            res.cookie('jwt', token, { httpOnly: true, sameSite: 'None', maxAge: maxAge * 1000 });
             // Response
-            res.status(200).json({ "jwt": token });
+            res.status(200).json({ token });
         }
         else {
             res.status(401).json({ "msg": "Enter the correct email and password" });
