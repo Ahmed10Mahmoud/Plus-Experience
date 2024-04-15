@@ -16,6 +16,7 @@ import { verifyToken } from "./src/middlewares/verifyToken.js";
 import { showMethod } from "./src/middlewares/showmethod.js";
 import cors from "cors"; // Import CORS packagedotenv.config();
 import { corsOptions } from "./config/corsOptions.js";
+
 // Connect to DB
 connectDB();
 // Built in middlewares

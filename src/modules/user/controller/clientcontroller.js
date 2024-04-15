@@ -1,6 +1,7 @@
 import Post from '../../../../db/model/postmodel.js';
 import cloudinary from "../../../../config/cloudinary.js";
 import postModel from '../../../../db/model/postmodel.js';
+import userModel from '../../../../db/model/usermodel.js';
 
 export const addPost = async (req, res) => {
   try {
@@ -194,8 +195,17 @@ export const applyCount = async (req, res) => {
     const post = await postModel.findById(postId);
     if (!post) { res.status(404).json({ 'msg': 'Post not found!' }); }
     else {
-      const Count = post.joinedFreelancers.waitingList.length;
-      res.status(200).json({ 'Count': Count });
+      const count = post.joinedFreelancers.waitingList.length;
+      const freelancersList = post.joinedFreelancers.waitingList;
+      let freelancers = [], i = count;
+      while (i > 0) {
+        freelancers.push(await userModel.findById(freelancersList[count - i]));
+        i--;
+      }
+      res.status(200).json({
+        'freelancers Count': freelancersList.length,
+        'freelancers List': freelancers
+      });
     }
   }
 };
