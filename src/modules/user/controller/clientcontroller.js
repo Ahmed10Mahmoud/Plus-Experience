@@ -54,7 +54,6 @@ export const getPost = async (req, res) => {
 
 export const getAllPosts = async (req, res) => {
   try {
-    const postId = req.params.postId;
     const post = await Post.find();
     res.status(200).json(post);
   } catch (error) {
@@ -208,4 +207,48 @@ export const applyCount = async (req, res) => {
       });
     }
   }
+};
+
+export const updateProfile = async (req, res) => {
+  const id = req.id;
+  const updates = req.body;
+
+  try {
+      if (!id) {
+          return res.status(440).json({ "msg": "Your Session has Expired" });
+      }
+
+      if (!updates) {
+          return res.status(400).json({ "msg": "Id and updates are required!" });
+      }
+
+      const foundUser = await userModel.findById(id);
+      if (!foundUser) {
+          return res.status(404).json({ "msg": "User not found" });
+      }
+
+      // Merge updates
+      Object.assign(foundUser, updates);
+
+      const updatedUser = await foundUser.save();
+      updatedUser.password = undefined;
+      updatedUser._id = null;
+
+      res.status(200).json(updatedUser);
+  } catch (error) {
+      console.error(error.message);
+      res.status(500).json({ "msg": "Internal server error" });
+  }
+};
+
+export const showProfile = async (req, res) => {
+  const id = req.id;
+  if (!id) {
+      res.status(440).json({ "msg": "Your Session has Expired" });
+  }
+  const foundUser = await userModel.findOne({ _id: id });
+  foundUser.password = undefined;
+  foundUser._id = null;
+  console.log(foundUser);
+  res.status(200).json({ "user": foundUser });
 };

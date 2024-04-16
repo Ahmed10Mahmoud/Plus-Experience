@@ -10,13 +10,14 @@ import {
     apply,
     deleteSkill,
     modifySkill,
+    realtedPost,
     showProfile,
     updateProfile,
     uploadImage
 } from "./controller/usercontroller.js";
 
 //Show profile , show user 
-router.get('/', verifyRoles(rolesList.Admin, rolesList.Freelancer), showProfile);
+router.get('/', verifyRoles(rolesList.Admin,rolesList.Client, rolesList.Freelancer), showProfile);
 //Update profile , update user , set profile
 router.patch('/update', verifyRoles(rolesList.Admin, rolesList.Freelancer), updateProfile);
 router.patch(
@@ -32,4 +33,6 @@ router.patch('/skill/update', verifyRoles(rolesList.Admin, rolesList.Freelancer)
 //Files
 //Apply to a post
 router.patch('/apply/:id', verifyRoles(rolesList.Freelancer), apply);
+//related posts 
+router.get('/relatedPost',verifyRoles(rolesList.Freelancer),realtedPost)
 export default router;
