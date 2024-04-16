@@ -51,7 +51,10 @@ const userSchema = new Schema({
   },
   skills: {
     type: [String],
-  }
+  },
+  acceptedPosts: {
+    type: [String]
+  },
 }
   , {
     timestamps: true

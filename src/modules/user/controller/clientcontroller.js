@@ -2,6 +2,7 @@ import Post from '../../../../db/model/postmodel.js';
 import cloudinary from "../../../../config/cloudinary.js";
 import postModel from '../../../../db/model/postmodel.js';
 import userModel from '../../../../db/model/usermodel.js';
+import rateModel from '../../../../db/model/rate.model.js';
 
 export const addPost = async (req, res) => {
   try {
@@ -209,3 +210,51 @@ export const applyCount = async (req, res) => {
     }
   }
 };
+
+export const Accept = async (req, res) => {
+  const postId = req.params.id;
+  const freelancerId = req.body.freelancerId;
+
+  if (!freelancerId || !postId) { res.status(400).json({ 'msg': 'Something went wrong' }); }
+  else {
+    const post = await postModel.findById(postId);
+    const freelancerIndex = await post.joinedFreelancers.waitingList.indexOf(freelancerId);
+    if (freelancerIndex == null) { return res.status(404).json({ 'msg': 'Freelancer is not in the waiting list!' }); }
+    const slice = await post.joinedFreelancers.waitingList.splice(freelancerIndex, 1);
+    const addFreelancer = await post.joinedFreelancers.freelancersIdList.push(freelancerId);
+    const freelancer = await userModel.findById(freelancerId);
+    const addPost = await freelancer.acceptedPosts.push(postId);
+    const result1 = await freelancer.save();
+    const result2 = await post.save();
+    res.status(201).json({ 'msg': 'Freelancer accepted' });
+  }
+}
+
+export const Reject = async (req, res) => {
+  const postId = req.params.id, freelancerId = req.body.freelancerId;
+
+  if (!freelancerId || !postId) { res.status(400).json({ 'msg': 'Something went wrong' }); }
+  else {
+    const post = await postModel.findById(postId);
+    const freelancerIndex = await post.joinedFreelancers.waitingList.indexOf(freelancerId);
+    if (freelancerIndex == null) { return res.status(404).json({ 'msg': 'Freelancer is not in the waiting list!' }); }
+    const slice = await post.joinedFreelancers.waitingList.splice(freelancerIndex, 1);
+    const result = await post.save();
+    res.status(201).json({ 'msg': 'Freelancer rejected' });
+  }
+}
+
+export const Rate = async (req, res) => {
+  const clientId = req.id, postId = req.params.id, { freelancerId, rate, comment } = req.body;
+  if (!clientId || !freelancerId || !postId) { return res.status(401).json({ 'msg': 'Something went wrong' }); }
+  if (!rate || !comment) { return res.status(400).json({ 'msg': 'Please enter the rate and a comment' }); }
+  const newRate = new rateModel({
+    clientId,
+    freelancerId,
+    postId,
+    rate,
+    comment
+  });
+  await newRate.save();
+  res.status(201).json({ 'rate': newRate });
+}

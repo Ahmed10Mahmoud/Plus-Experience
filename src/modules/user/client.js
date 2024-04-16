@@ -1,5 +1,5 @@
 import express from 'express';
-import { addPost, getPost, deletePosts, getOwnPosts, getAllPosts, filterPosts, updatePost, uploadCover, applyCount } from './controller/clientcontroller.js';
+import { addPost, getPost, deletePosts, getOwnPosts, getAllPosts, filterPosts, updatePost, uploadCover, applyCount, Accept, Reject, Rate } from './controller/clientcontroller.js';
 import { verifyRoles } from '../../middlewares/verifyroles.js';
 import rolesList from '../../../config/roleslist.js';
 import upload from "../../middlewares/multercloud.js";
@@ -34,4 +34,11 @@ router.patch('/cover/add/:postId',
 //Show apply count
 router.get('/applycount/:postId', verifyRoles(rolesList.Client), applyCount);
 //Show profile
+
+//Accept freelancer
+router.patch('/accept/:id', verifyRoles(rolesList.Client), Accept);
+//Reject freelancer
+router.patch('/reject/:id', verifyRoles(rolesList.Client), Reject);
+//Rate
+router.patch('/rate/:id', verifyRoles(rolesList.Client), Rate);
 export default router;

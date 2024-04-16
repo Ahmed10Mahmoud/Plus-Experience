@@ -24,7 +24,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(cookieParser());
-
+dotenv.config();
 
 app.use(showMethod);  //Show method
 app.use("/auth", Auth);
