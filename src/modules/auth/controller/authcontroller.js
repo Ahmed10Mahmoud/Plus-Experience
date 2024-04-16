@@ -17,7 +17,7 @@ export const createToken = (id, role) => {
 
 export const register = async (req, res) => {
     console.log("here in register")
-    let { userName, password, email, role } = req.body;
+    var { userName, password, email, role } = req.body;
     if (!userName || !password || !email || !role) {
         res.status(400).json({ "message": "Username, password, email, and role are required" });
     }
@@ -41,7 +41,6 @@ export const register = async (req, res) => {
                 "role": role,
                 activationCode
             });
-
             const link = `http://localhost:3500/auth/confirmEmail/${activationCode}`;
             const isSent = await sendEmail({ to: email, subject: "Activate Account", html: tempHtml(activationCode) })
             console.log(result);

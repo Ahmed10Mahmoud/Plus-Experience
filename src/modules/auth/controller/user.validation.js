@@ -1,5 +1,6 @@
 import Joi from 'joi';
 
+
 export const registerSchema = Joi.object({
     userName: Joi.string().min(3).max(20).required(),
     email: Joi.string().email().required(),
@@ -10,6 +11,7 @@ export const registerSchema = Joi.object({
         .required(), 
     role:Joi.string().required()
 }).required();
+
 
 export const activateSchema = Joi.object({
     activationCode: Joi.string().required()
