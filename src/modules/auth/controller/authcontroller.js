@@ -41,11 +41,10 @@ export const register = async (req, res) => {
                 "role": role,
                 activationCode
             });
-            const link = `http://localhost:3500/auth/confirmEmail/${activationCode}`;
             const isSent = await sendEmail({ to: email, subject: "Activate Account", html: tempHtml(activationCode) })
             console.log(result);
             // Reponse with the cookie
-            //res.status(201).json({ "msg": `Welcome ${username}, Now you can login.` });
+            // res.status(201).json({ "msg": `Welcome ${userName}, Now you can login.` });
             return isSent ? res.json({ success: true, message: 'plesage review your email' }) : res.json("Email is invalid")
         }
     } catch (err) {
@@ -70,10 +69,10 @@ export const login = async (req, res) => {
     if (email && password) {
         const foundUser = await userModel.findOne({ email: email }).exec();// is confirmed
         console.log("found user : " + foundUser);
-        if (!foundUser) { res.status(401).json({ "msg": "Incorrect email" }) }
+        if (!foundUser) { res.status(401).json({ "msg": "Incorrect email!" }) }
         // Compare hashed passwords
         const result = await bcrypt.compare(password, foundUser.password)
-        if (result && foundUser) {
+        if (result) {
             // Create jwt
             const token = createToken(foundUser.id, foundUser.role);
             const saved = await foundUser.save();
@@ -84,7 +83,7 @@ export const login = async (req, res) => {
             res.status(200).json({ token });
         }
         else {
-            res.status(401).json({ "msg": "Enter the correct email and password" });
+            res.status(401).json({ "msg": "Incorrect password!" });
         }
     } else {
         res.status(401).json({ "msg": "Enter email and password" });

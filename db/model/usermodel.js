@@ -52,14 +52,17 @@ const userSchema = new Schema({
   skills: {
     type: [String],
   },
-  PaymentInformation:{
-    type:String,
-    required:false
+  PaymentInformation: {
+    type: String,
+    required: false
   },
-  CompanyName:{
-    type:String,
-    required:false,
-  }
+  CompanyName: {
+    type: String,
+    required: false,
+  },
+  acceptedPosts: {
+    type: [String]
+  },
 }
   , {
     timestamps: true
