@@ -39,5 +39,9 @@ router.patch('/accept/:id', verifyRoles(rolesList.Client), Accept);
 router.patch('/reject/:id', verifyRoles(rolesList.Client), Reject);
 //Rate
 router.patch('/rate/:id', verifyRoles(rolesList.Client), Rate);
+//Show profile , show user 
+router.get('/', verifyRoles(rolesList.Client), showProfile);
+//Update profile , update user , set profile
+router.patch('/update', verifyRoles(rolesList.Client), updateProfile);
 
 export default router;
