@@ -14,7 +14,7 @@ export const showProfile = async (req, res) => {
     console.log(foundUser);
     res.status(200).json({ "user": foundUser });
 };
-
+/*
 export const updateProfile = async (req, res) => {
     const id = req.id;
     const updates = req.body;
@@ -57,7 +57,40 @@ export const updateProfile = async (req, res) => {
             res.sendStatus(500);
         }
     }
+};*/
+
+export const updateProfile = async (req, res) => {
+    const id = req.id;
+    const updates = req.body;
+
+    try {
+        if (!id) {
+            return res.status(440).json({ "msg": "Your Session has Expired" });
+        }
+
+        if (!updates) {
+            return res.status(400).json({ "msg": "Id and updates are required!" });
+        }
+
+        const foundUser = await userModel.findById(id);
+        if (!foundUser) {
+            return res.status(404).json({ "msg": "User not found" });
+        }
+
+        // Merge updates
+        Object.assign(foundUser, updates);
+
+        const updatedUser = await foundUser.save();
+        updatedUser.password = undefined;
+        updatedUser._id = null;
+
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ "msg": "Internal server error" });
+    }
 };
+
 
 export const uploadImage = async (req, res) => {
     const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: `Users/${req.id}` });//Add a profile for every user
@@ -167,3 +200,28 @@ export const apply = async (req, res) => {
         console.log(err.message);
     }
 };
+
+export const realtedPost= async (req,res) => {
+    try {
+        // Get the ID of the logged-in freelancer from the request
+        const freelancerId = req.id; // Assuming the freelancer's ID is stored in req.userId
+        
+        // Find the profile of the logged-in freelancer
+        const freelancer = await userModel.findById(freelancerId);
+    
+        if (!freelancer) {
+          return res.status(404).json({ message: 'Freelancer not found' });
+        }
+
+        // Extract the freelancer's skills
+        const freelancerSkills = freelancer.skills;
+    
+        // Find posts that match any of the freelancer's requirements
+        const relatedPosts = await postModel.find({ requirements: { $in: freelancerSkills } });
+    
+        res.status(200).json(relatedPosts);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+      }
+}

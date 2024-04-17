@@ -41,7 +41,6 @@ export const register = async (req, res) => {
                 "role": role,
                 activationCode
             });
-
             const isSent = await sendEmail({ to: email, subject: "Activate Account", html: tempHtml(activationCode) })
             console.log(result);
             // Reponse with the cookie
