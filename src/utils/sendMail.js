@@ -12,15 +12,7 @@ export const sendEmail = async({to,subject,html})=>{
             pass:process.env.EMAILPASS
         }
     })
-    console.log("hellp")
     console.log(process.env.EMAIL + process.env.EMAILPASS)
-    console.log(process.env.EMAIL + process.env.EMAILPASS)
-
-    console.log(process.env.EMAIL + process.env.EMAILPASS)
-
-    console.log(process.env.EMAIL + process.env.EMAILPASS)
-
-
     //reciver
     const emaiInfo = await transporter.sendMail({
         from:`"Plus-Exprience"<${process.env.EMAIL}>`,

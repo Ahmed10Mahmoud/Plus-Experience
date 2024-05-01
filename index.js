@@ -7,10 +7,10 @@ import mongoose from 'mongoose';
 import Auth from './src/modules/auth/auth.js';
 import adminRouter from './src/modules/user/admin.js';
 import clientRouter from './src/modules/user/client.js';
-import conversationRouter from "./src/modules/conversation/conversation.js";
-import messageRouter from "./src/modules/message/message.js";
 import userRouter from './src/modules/user/user.js';
 import projectRouter from './src/modules/project/project.js';
+//import chatRouter from './src/modules/chat/chat.js'
+import messageRouter from './src/modules/message/message.js'
 import dotenv from 'dotenv';
 import { verifyToken } from "./src/middlewares/verifyToken.js";
 import { showMethod } from "./src/middlewares/showmethod.js";
@@ -32,7 +32,7 @@ app.use("/admin", adminRouter);
 app.use("/client", clientRouter);
 app.use('/user', userRouter);
 app.use('/project', projectRouter);
-app.use('/conversation', conversationRouter);
+//app.use('/chat', chatRouter );
 app.use('/message', messageRouter);
 
 mongoose.connection.once('open', () => {
