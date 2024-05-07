@@ -11,11 +11,11 @@ import conversationRouter from "./src/modules/conversation/conversation.js";
 import messageRouter from "./src/modules/message/message.js";
 import userRouter from './src/modules/user/user.js';
 import projectRouter from './src/modules/project/project.js';
-import dotenv from 'dotenv';
 import { verifyToken } from "./src/middlewares/verifyToken.js";
 import { showMethod } from "./src/middlewares/showmethod.js";
 import cors from "cors"; // Import CORS packagedotenv.config();
 import { corsOptions } from "./config/corsOptions.js";
+import dotenv from 'dotenv';
 
 // Connect to DB
 connectDB();

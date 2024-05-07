@@ -17,12 +17,13 @@ import {
 } from "./controller/usercontroller.js";
 
 //Show profile , show user 
-router.get('/', verifyRoles(rolesList.Admin,rolesList.Client, rolesList.Freelancer), showProfile);
+router.get('/', verifyRoles(rolesList.Admin, rolesList.Client, rolesList.Freelancer), showProfile);
 //Update profile , update user , set profile
 router.patch('/update', verifyRoles(rolesList.Admin, rolesList.Freelancer), updateProfile);
+//Upload img
 router.patch(
     '/image',
-    verifyRoles(rolesList.Freelancer, rolesList.Admin),
+    verifyRoles(rolesList.Freelancer, rolesList.Admin, rolesList.Client),
     upload.single('file'),
     verifyFile(FILE_LIST.image),
     uploadImage);
@@ -34,5 +35,5 @@ router.patch('/skill/update', verifyRoles(rolesList.Admin, rolesList.Freelancer)
 //Apply to a post
 router.patch('/apply/:id', verifyRoles(rolesList.Freelancer), apply);
 //related posts 
-router.get('/relatedPost',verifyRoles(rolesList.Freelancer),realtedPost)
+router.get('/relatedPost', verifyRoles(rolesList.Freelancer), realtedPost)
 export default router;

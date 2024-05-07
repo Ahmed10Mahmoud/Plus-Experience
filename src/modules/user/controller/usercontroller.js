@@ -201,27 +201,27 @@ export const apply = async (req, res) => {
     }
 };
 
-export const realtedPost= async (req,res) => {
+export const realtedPost = async (req, res) => {
     try {
         // Get the ID of the logged-in freelancer from the request
         const freelancerId = req.id; // Assuming the freelancer's ID is stored in req.userId
-        
+
         // Find the profile of the logged-in freelancer
         const freelancer = await userModel.findById(freelancerId);
-    
+
         if (!freelancer) {
-          return res.status(404).json({ message: 'Freelancer not found' });
+            return res.status(404).json({ message: 'Freelancer not found' });
         }
 
         // Extract the freelancer's skills
         const freelancerSkills = freelancer.skills;
-    
+
         // Find posts that match any of the freelancer's requirements
         const relatedPosts = await postModel.find({ requirements: { $in: freelancerSkills } });
-    
+
         res.status(200).json(relatedPosts);
-      } catch (error) {
+    } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
-      }
+    }
 }
