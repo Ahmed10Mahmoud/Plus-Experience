@@ -11,10 +11,13 @@ import conversationRouter from "./src/modules/conversation/conversation.js";
 import messageRouter from "./src/modules/message/message.js";
 import userRouter from './src/modules/user/user.js';
 import projectRouter from './src/modules/project/project.js';
+import modelRouter from './src/modules/ml/model.js'
 import { verifyToken } from "./src/middlewares/verifyToken.js";
 import { showMethod } from "./src/middlewares/showmethod.js";
 import cors from "cors"; // Import CORS packagedotenv.config();
 import { corsOptions } from "./config/corsOptions.js";
+import bodyParser from 'body-parser'
+import { spawn } from 'child_process'
 import dotenv from 'dotenv';
 
 // Connect to DB
@@ -23,9 +26,12 @@ connectDB();
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded());
+app.use(bodyParser.json())
 app.use(cookieParser());
 dotenv.config();
 app.use(showMethod);  //Show method
+// app.use(spawn());
+// Our middlewares
 app.use("/auth", Auth);
 app.use(verifyToken); //Verifing JWT
 app.use("/admin", adminRouter);
@@ -34,7 +40,7 @@ app.use('/user', userRouter);
 app.use('/project', projectRouter);
 app.use('/conversation', conversationRouter);
 app.use('/message', messageRouter);
-
+app.use('/ml', modelRouter);
 mongoose.connection.once('open', () => {
     console.log('Connected');
     app.listen(PORT, () => { console.log(`Server is running on PORT: ${PORT}`) });
