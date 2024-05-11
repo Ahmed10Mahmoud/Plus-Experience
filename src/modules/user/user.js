@@ -12,12 +12,15 @@ import {
     modifySkill,
     realtedPost,
     showProfile,
+    showProfile2,
     updateProfile,
     uploadImage
 } from "./controller/usercontroller.js";
 
 //Show profile , show user 
 router.get('/', verifyRoles(rolesList.Admin, rolesList.Client, rolesList.Freelancer), showProfile);
+router.get('/:id', verifyRoles(rolesList.Admin, rolesList.Client, rolesList.Freelancer), showProfile2);
+
 //Update profile , update user , set profile
 router.patch('/update', verifyRoles(rolesList.Admin, rolesList.Freelancer), updateProfile);
 //Upload img

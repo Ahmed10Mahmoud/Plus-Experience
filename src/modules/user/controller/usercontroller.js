@@ -14,6 +14,17 @@ export const showProfile = async (req, res) => {
     console.log(foundUser);
     res.status(200).json({ "user": foundUser });
 };
+export const showProfile2 = async (req, res) => {
+    const userId = req.params.id;
+    if (!userId) {
+        res.status(440).json({ "msg": "Your Session has Expired" });
+    }
+    const foundUser = await userModel.findOne({ _id: userId });
+    foundUser.password = undefined;
+    foundUser._id = null;
+    console.log(foundUser);
+    res.status(200).json({ "user": foundUser });
+};
 /*
 export const updateProfile = async (req, res) => {
     const id = req.id;
