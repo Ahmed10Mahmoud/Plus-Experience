@@ -19,12 +19,24 @@ export const showProfile2 = async (req, res) => {
     if (!userId) {
         res.status(440).json({ "msg": "Your Session has Expired" });
     }
-    const foundUser = await userModel.findOne({ _id: userId });
-    foundUser.password = undefined;
-    foundUser._id = null;
-    console.log(foundUser);
-    res.status(200).json({ "user": foundUser });
+
+    try {
+        const foundUser = await userModel.findOne({ _id: userId });
+
+        if (foundUser) {
+            foundUser.password = undefined;
+            foundUser._id = null;
+            console.log(foundUser);
+            res.status(200).json({ "user": foundUser });
+        } else {
+            res.status(404).json({ "msg": "User not found" });
+        }
+    } catch (error) {
+        console.error("Error fetching user profile:", error);
+        res.status(500).json({ "error": "Internal server error" });
+    }
 };
+
 /*
 export const updateProfile = async (req, res) => {
     const id = req.id;
