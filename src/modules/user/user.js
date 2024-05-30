@@ -25,7 +25,7 @@ router.get('/:id', verifyRoles(rolesList.Admin,rolesList.Client, rolesList.Freel
 router.patch('/update', verifyRoles(rolesList.Admin, rolesList.Freelancer), updateProfile);
 router.patch(
     '/image',
-    verifyRoles(rolesList.Freelancer, rolesList.Admin,rolesList.Client),
+    verifyRoles(rolesList.Freelancer, rolesList.Admin),
     upload.single('file'),
     verifyFile(FILE_LIST.image),
     uploadImage);
