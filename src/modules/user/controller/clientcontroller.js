@@ -9,10 +9,10 @@ export const addPost = async (req, res) => {
     // Extract data from the request body
     let { title, description, category, requirements } = req.body;
     console.log({ title, description, category, requirements })
-    if (!title || !description || !category || !requirements) {
-      res.status(400).json({ "msg": "Please fill all fields!" });
-    }
-    else {
+    // if (!title || !description || !category || !requirements) {
+    //   res.status(400).json({ "msg": "Please fill all fields!" });
+    // }
+    // else {
       //Split requirements into array
       requirements = requirements.split(", ");
       //Create a new post instance with extracted data
@@ -34,7 +34,7 @@ export const addPost = async (req, res) => {
       res.status(201).json(newPost);
 
 
-    }
+    
   } catch (error) {
     //Handle errors
     console.error(error);
@@ -55,7 +55,7 @@ export const getPost = async (req, res) => {
 
 export const getAllPosts = async (req, res) => {
   try {
-    const post = await Post.find();
+    const post = await Post.find().populate('owner');
     res.status(200).json(post);
   } catch (error) {
     console.error(error);

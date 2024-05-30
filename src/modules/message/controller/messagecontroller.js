@@ -69,3 +69,46 @@ export const getMessages = async (req, res) => {
 		res.status(500).json({ error: "Internal server error" });
 	}
 };
+
+export const getChat = async (req, res) => {
+	try {
+	  const conversation = await Conversation.findById(req.params.id).populate('participants').populate('messages');
+	  if (!conversation) {
+		return res.status(404).json({ message: 'Chat not found' });
+	  }
+	  res.json(conversation);
+	} catch (err) {
+	  console.error(err);
+	  res.status(500).json({ message: 'Server Error' });
+	}
+  };
+
+export const lastMessage = async (req, res) => {
+	try {
+	  const conversation = await Conversation.findById(req.params.id).populate({
+		path: 'messages',
+		options: { sort: { createdAt: -1 }, limit: 1 } // Sort messages by createdAt field in descending order to get the last one
+	  });
+	  if (!conversation || conversation.messages.length === 0) {
+		return res.status(404).json({ message: 'Chat or message not found' });
+	  }
+	  res.json(conversation.messages[0]);
+	} catch (err) {
+	  console.error(err);
+	  res.status(500).json({ message: 'Server Error' });
+	}
+  };
+
+export const userChats = async (req, res) => {
+	try {
+	  const userId = req.params.userId;
+	  const conversations = await Conversation.find({ participants: userId }).populate('participants').populate({
+		path: 'messages',
+		options: { sort: { createdAt: -1 }, limit: 1 } // Get the last message in each chat
+	  });
+	  res.json(conversations);
+	} catch (err) {
+	  console.error(err);
+	  res.status(500).json({ message: 'Server Error' });
+	}
+  };
