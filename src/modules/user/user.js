@@ -24,12 +24,7 @@ router.get('/:id', verifyRoles(rolesList.Admin, rolesList.Client, rolesList.Free
 //Update profile , update user , set profile
 router.patch('/update', verifyRoles(rolesList.Admin, rolesList.Freelancer), updateProfile);
 //Upload img
-router.patch(
-    '/image',
-    verifyRoles(rolesList.Freelancer, rolesList.Admin, rolesList.Client),
-    upload.single('file'),
-    verifyFile(FILE_LIST.image),
-    uploadImage);
+
 //Skills modification
 router.patch('/skill/add', verifyRoles(rolesList.Admin, rolesList.Freelancer), addSkill);
 router.patch('/skill/delete', verifyRoles(rolesList.Admin, rolesList.Freelancer), deleteSkill);
