@@ -16,7 +16,7 @@ import { verifyToken } from "./src/middlewares/verifyToken.js";
 import { showMethod } from "./src/middlewares/showmethod.js";
 import cors from "cors"; // Import CORS packagedotenv.config();
 import { corsOptions } from "./config/corsOptions.js";
-
+import paymentRouter from "./src/modules/payment/payment.js"
 // Connect to DB
 connectDB();
 // Built in middlewares
@@ -34,6 +34,7 @@ app.use('/user', userRouter);
 app.use('/project', projectRouter);
 //app.use('/chat', chatRouter );
 app.use('/message', messageRouter);
+app.use('/payment',paymentRouter)
 
 mongoose.connection.once('open', () => {
     console.log('Connected');
