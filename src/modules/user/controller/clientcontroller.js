@@ -3,7 +3,8 @@ import cloudinary from "../../../../config/cloudinary.js";
 import postModel from '../../../../db/model/postmodel.js';
 import userModel from '../../../../db/model/usermodel.js';
 import rateModel from '../../../../db/model/rate.model.js';
-
+import Payment from "../../../../db/model/Payment.js";
+/*
 export const addPost = async (req, res) => {
   try {
     // Extract data from the request body
@@ -41,6 +42,77 @@ export const addPost = async (req, res) => {
     res.status(500).json({ message: 'Internal server error!' });
   }
 };
+*/
+
+
+export const addPost = async (req, res) => {
+  try {
+    let { title, description, category, requirements, method, amount, currency, cardNumber, cardExpiry, cardCVC, paypalEmail } = req.body;
+    
+    if (!title || !description || !category || !requirements) {
+      return res.status(400).json({ "msg": "Please fill all fields!" });
+    }
+
+    // Check if the user has used their free post
+    const user = await userModel.findById(req.id);
+    if (!user) {
+      return res.status(404).json({ "msg": "User not found!" });
+    }
+
+    // If user has not used the free post
+    if (!user.hasUsedFreePost) {
+      // Mark the free post as used
+      user.hasUsedFreePost = true;
+      await user.save();
+    } else {
+      // If the user has already used their free post, they must pay
+      if (!method || !amount || !currency || (!cardNumber && !paypalEmail)) {
+        return res.status(400).json({ "msg": "Payment details are required for subsequent posts!" });
+      }
+
+      const payment = new Payment({
+        method,
+        amount,
+        currency,
+        cardNumber,
+        cardExpiry,
+        cardCVC,
+        paypalEmail,
+        user: req.id,
+      });
+
+      await payment.save();
+    }
+
+    // Split requirements into array
+    requirements = requirements.split(", ");
+
+    // Create a new post instance with extracted data
+    const newPost = new Post({
+      title,
+      description,
+      category,
+      requirements,
+      owner: req.id,
+    });
+
+    if (req.file) {
+      const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: `Posts/${newPost.id}/Cover` });
+      newPost.cover = { secure_url, public_id };
+    }
+
+    // Save the new post to the database
+    await newPost.save();
+
+    // Send a response indicating successful creation
+    res.status(201).json(newPost);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error!' });
+  }
+};
+
 
 export const getPost = async (req, res) => {
   try {
