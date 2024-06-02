@@ -63,6 +63,10 @@ const userSchema = new Schema({
   acceptedPosts: {
     type: [String]
   },
+  hasUsedFreePost: {
+    type: Boolean,
+    default: false,
+  },
 }
   , {
     timestamps: true
