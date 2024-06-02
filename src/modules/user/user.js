@@ -18,17 +18,12 @@ import {
 } from "./controller/usercontroller.js";
 
 //Show profile , show user 
-router.get('/', verifyRoles(rolesList.Admin,rolesList.Client, rolesList.Freelancer), showProfile);
-router.get('/:id', verifyRoles(rolesList.Admin,rolesList.Client, rolesList.Freelancer), showProfile2);
+router.get('/', verifyRoles(rolesList.Admin, rolesList.Client, rolesList.Freelancer), showProfile);
+router.get('/:id', verifyRoles(rolesList.Admin, rolesList.Client, rolesList.Freelancer), showProfile2);
 
 //Update profile , update user , set profile
 router.patch('/update', verifyRoles(rolesList.Admin, rolesList.Freelancer), updateProfile);
-router.patch(
-    '/image',
-    verifyRoles(rolesList.Freelancer, rolesList.Admin),
-    upload.single('file'),
-    verifyFile(FILE_LIST.image),
-    uploadImage);
+
 //Skills modification
 router.patch('/skill/add', verifyRoles(rolesList.Admin, rolesList.Freelancer), addSkill);
 router.patch('/skill/delete', verifyRoles(rolesList.Admin, rolesList.Freelancer), deleteSkill);
@@ -37,5 +32,5 @@ router.patch('/skill/update', verifyRoles(rolesList.Admin, rolesList.Freelancer)
 //Apply to a post
 router.patch('/apply/:id', verifyRoles(rolesList.Freelancer), apply);
 //related posts 
-router.get('/relatedPost',verifyRoles(rolesList.Freelancer),realtedPost)
+router.get('/relatedPost', verifyRoles(rolesList.Freelancer), realtedPost)
 export default router;

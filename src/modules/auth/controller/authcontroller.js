@@ -69,7 +69,7 @@ export const login = async (req, res) => {
     if (email && password) {
         const foundUser = await userModel.findOne({ email: email }).exec();// is confirmed
         console.log("found user : " + foundUser);
-        if (!foundUser) { res.status(401).json({ "msg": "Incorrect email!" }) }
+        if (!foundUser) { return res.status(401).json({ "msg": "Incorrect email!" }) }
         // Compare hashed passwords
         const result = await bcrypt.compare(password, foundUser.password)
         if (result) {
