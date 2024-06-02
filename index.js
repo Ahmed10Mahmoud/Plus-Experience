@@ -10,6 +10,7 @@ import clientRouter from './src/modules/user/client.js';
 import userRouter from './src/modules/user/user.js';
 import projectRouter from './src/modules/project/project.js';
 import paymentRouter from './src/modules/payment/payment.js'
+import reportRouter from './src/modules/report/report.js'
 //import chatRouter from './src/modules/chat/chat.js'
 import messageRouter from './src/modules/message/message.js'
 import modelRouter from './src/modules/ml/model.js'
@@ -32,6 +33,7 @@ dotenv.config();
 app.use(showMethod);  //Show method
 // app.use(spawn());
 // Our middlewares
+app.use('/report',reportRouter)
 app.use("/auth", Auth);
 app.use(verifyToken); //Verifing JWT
 app.use("/admin", adminRouter);
