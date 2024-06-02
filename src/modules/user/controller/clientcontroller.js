@@ -83,6 +83,7 @@ export const addPost = async (req, res) => {
 
       await payment.save();
     }
+    
 
     // Split requirements into array
     requirements = requirements.split(", ");
@@ -197,7 +198,7 @@ export const filterPosts = async (req, res) => {
     //console.log(filters)
 
     // Finding posts based on filters
-    const posts = await Post.find(filters);
+    const posts = await Post.find(filters).populate('owner');
 
     // Returning the result
     res.status(200).json(posts);

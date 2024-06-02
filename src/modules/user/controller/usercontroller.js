@@ -14,6 +14,7 @@ export const showProfile = async (req, res) => {
     console.log(foundUser);
     res.status(200).json({ "user": foundUser });
 };
+/*
 export const showProfile2 = async (req, res) => {
     const userId = req.params.id;
     if (!userId) {
@@ -36,7 +37,7 @@ export const showProfile2 = async (req, res) => {
         res.status(500).json({ "error": "Internal server error" });
     }
 };
-
+*/
 /*
 export const updateProfile = async (req, res) => {
     const id = req.id;
@@ -137,22 +138,55 @@ export const uploadImage = async (req, res) => {
 
 export const addSkill = async (req, res) => {
     const userId = req.id;
-    const skills = req.body.skills;
-    //console.log(skills);
-    if (!userId) { res.status(440).json({ "msg": "Your Session has Expired" }); }
-    else {
-        if (!skills) { res.status(400).json({ "msg": "Please enter the new skills" }); }
-        else {
-            const foundUser = await userModel.findOne({ _id: userId });
-            foundUser.skills = await foundUser.skills.concat(skills);
-            const result = await foundUser.save()
-            // console.log(result)
-            foundUser.password = undefined;
-            foundUser._id = null;
-            res.status(201).json({ "user": foundUser });
+    let skills = req.body.skills;
+
+    // Check if the user session has expired
+    if (!userId) {
+        return res.status(440).json({ "msg": "Your Session has Expired" });
+    }
+
+    // Check if skills are provided
+    if (!skills) {
+        return res.status(400).json({ "msg": "Please enter the new skills" });
+    }
+
+    // Ensure skills is an array
+    if (!Array.isArray(skills)) {
+        return res.status(400).json({ "msg": "Skills should be an array of strings" });
+    }
+
+    try {
+        // Find the user by ID
+        const foundUser = await userModel.findOne({ _id: userId });
+
+        if (!foundUser) {
+            return res.status(404).json({ "msg": "User not found" });
         }
+
+        // Sanitize and filter the input skills
+        skills = skills.map(skill => skill.trim()).filter(skill => skill.length > 0);
+
+        // Remove duplicate skills
+        const newSkills = [...new Set(skills)];
+
+        // Add new skills to the user's existing skills
+        foundUser.skills = Array.from(new Set([...foundUser.skills, ...newSkills]));
+
+        // Save the updated user
+        const result = await foundUser.save();
+
+        // Remove sensitive information before sending response
+        foundUser.password = undefined;
+        foundUser._id = null;
+
+        // Send the updated user profile in the response
+        res.status(201).json({ "user": foundUser });
+    } catch (error) {
+        console.error("Error adding skills:", error);
+        res.status(500).json({ "msg": "Internal server error" });
     }
 };
+
 
 export const deleteSkill = async (req, res) => {
     const userId = req.id;
@@ -223,8 +257,8 @@ export const apply = async (req, res) => {
         console.log(err.message);
     }
 };
-
-export const realtedPost = async (req, res) => {
+/*
+export const relatedPost = async (req, res) => {
     try {
         // Get the ID of the logged-in freelancer from the request
         const freelancerId = req.id; // Assuming the freelancer's ID is stored in req.userId
@@ -235,16 +269,45 @@ export const realtedPost = async (req, res) => {
         if (!freelancer) {
             return res.status(404).json({ message: 'Freelancer not found' });
         }
-
         // Extract the freelancer's skills
         const freelancerSkills = freelancer.skills;
 
         // Find posts that match any of the freelancer's requirements
-        const relatedPosts = await postModel.find({ requirements: { $in: freelancerSkills } });
-
+        const relatedPosts = await postModel.find({ requirements: { $elemMatch: { $in: freelancerSkills } } });
+// Log related posts found
+console.log('Related Posts:', relatedPosts);
         res.status(200).json(relatedPosts);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
     }
 }
+*/
+export const relatedPost = async (req, res) => {
+    try {
+      const userId = req.id;
+      
+      // Find the user by ID
+      const user = await userModel.findById(userId);
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+  
+      // Get the user's skills
+      const userSkills = user.skills;
+  
+      if (!userSkills || userSkills.length === 0) {
+        return res.status(400).json({ message: 'User has no skills listed' });
+      }
+  
+      // Find posts that match the user's skills
+      const relatedPosts = await postModel.find({
+        requirements: { $in: userSkills }
+      });
+  
+      res.status(200).json(relatedPosts);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
+  

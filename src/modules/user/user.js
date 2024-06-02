@@ -10,16 +10,16 @@ import {
     apply,
     deleteSkill,
     modifySkill,
-    realtedPost,
+    relatedPost,
     showProfile,
-    showProfile2,
+    //showProfile2,
     updateProfile,
     uploadImage
 } from "./controller/usercontroller.js";
 
 //Show profile , show user 
 router.get('/', verifyRoles(rolesList.Admin, rolesList.Client, rolesList.Freelancer), showProfile);
-router.get('/:id', verifyRoles(rolesList.Admin, rolesList.Client, rolesList.Freelancer), showProfile2);
+//router.get('/:id', verifyRoles(rolesList.Admin, rolesList.Client, rolesList.Freelancer), showProfile2);
 
 //Update profile , update user , set profile
 router.patch('/update', verifyRoles(rolesList.Admin, rolesList.Freelancer), updateProfile);
@@ -32,5 +32,5 @@ router.patch('/skill/update', verifyRoles(rolesList.Admin, rolesList.Freelancer)
 //Apply to a post
 router.patch('/apply/:id', verifyRoles(rolesList.Freelancer), apply);
 //related posts 
-router.get('/relatedPost', verifyRoles(rolesList.Freelancer), realtedPost)
+router.get('/relatedPost', verifyRoles(rolesList.Freelancer), relatedPost)
 export default router;
