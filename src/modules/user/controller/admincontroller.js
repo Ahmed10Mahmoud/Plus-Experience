@@ -10,6 +10,15 @@ export const deleteUser = async (req, res) => {
     }
     const result = await userModel.deleteOne({ _id: id });
     res.status(200).json(result);
-
 };
+
+export const allUsers = async(req,res)=>{
+    try {
+        const users = await userModel.find();
+        res.status(200).json(users);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Failed to fetch users' });
+      }
+}
 
