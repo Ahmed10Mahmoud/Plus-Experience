@@ -25,6 +25,7 @@ const userSchema = new Schema({
   },
   activationCode: String,
   forgetCode: String,
+  forgetCodeExpires: Date,
   img: {
     secure_url: String,
     public_id: String
