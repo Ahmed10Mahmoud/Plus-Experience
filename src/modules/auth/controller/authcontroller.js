@@ -89,7 +89,7 @@ export const login = async (req, res) => {
         res.status(401).json({ "msg": "Enter email and password" });
     };
 };
-
+/*
 export const sendforgetCode = async (req, res, next) => {
     const user = await userModel.findOne({ email: req.body.email });
     if (!user) {
@@ -110,7 +110,38 @@ export const sendforgetCode = async (req, res, next) => {
     return await sendEmail({ to: user.email, subject: 'reset password', html: forgetCodetHtml(code) }) ? res.json({ success: true, message: "check your gmail " }) : res.json({ faile: true, message: "fail to reset" })
 
 }
+*/
+export const sendForgetCode = async (req, res) => {
+    const user = await userModel.findOne({ email: req.body.email });
+    if (!user) {
+        return res.status(400).json({ message: "Invalid email!" });
+    }
 
+    // Generate a token
+    const token = crypto.randomBytes(32).toString('hex');
+
+    // Save the token to the user record along with an expiration time
+    user.forgetCode = token;
+    user.forgetCodeExpires = Date.now() + 3600000; // Token expires in 1 hour
+    await user.save();
+
+    // Send email with the token
+    const resetLink = `http://yourfrontendurl.com/reset-password/${token}`;
+    const emailHtml = `<p>Please use the following link to reset your password: <a href="${resetLink}">Reset Password</a></p>`;
+
+    const emailSent = await sendEmail({
+        to: user.email,
+        subject: 'Reset Password',
+        html: emailHtml
+    });
+
+    if (emailSent) {
+        return res.status(200).json({ success: true, message: "Check your email for the reset link." });
+    } else {
+        return res.status(500).json({ success: false, message: "Failed to send reset email." });
+    }
+};
+/*
 export const resetPassword = async (req, res, next) => {
     //check user
     let user = userModel.findOne({ forgetCode: req.body.forgetCode });
@@ -126,6 +157,33 @@ export const resetPassword = async (req, res, next) => {
     return res.json({ message: "successfuly changed" })
 
 }
+*/
+
+export const resetPassword = async (req, res) => {
+    const { token, password } = req.body;
+
+    // Find the user by the token and check if the token is still valid
+    const user = await userModel.findOne({
+        forgetCode: token,
+        forgetCodeExpires: { $gt: Date.now() }
+    });
+
+    if (!user) {
+        return res.status(400).json({ message: "Invalid or expired token." });
+    }
+
+    // Hash the new password
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(password, salt);
+
+    // Remove the token and its expiration time from the user record
+    user.forgetCode = undefined;
+    user.forgetCodeExpires = undefined;
+    await user.save();
+
+    res.status(200).json({ message: "Password successfully changed." });
+};
+
 export const logout = (req, res) => {
     res.cookie("jwt", '', { maxAge: 1 });
     res.status(200).json({ "msg": "Loged out successfully" })
