@@ -5,49 +5,13 @@ import userModel from '../../../../db/model/usermodel.js';
 import rateModel from '../../../../db/model/rate.model.js';
 import { spawn } from "child_process";
 
-// export const addPost = async (req, res) => {
-//   try {
-//     // Extract data from the request body
-//     let { title, description, category, requirements } = req.body;
-//     console.log({ title, description, category, requirements })
-//     if (!title || !description || !category || !requirements) {
-//       res.status(400).json({ "msg": "Please fill all fields!" });
-//     }
-//     else {
-//       //Split requirements into array
-//       requirements = requirements.split(", ");
-//       //Create a new post instance with extracted data
-//       const newPost = new Post({
-//         title,
-//         description,
-//         category,
-//         requirements,
-//         owner: req.id
-//       });
-//       if (req.file) {
-//         const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: `Posts/${newPost.id}/Cover` });
-//         newPost.cover = { secure_url, public_id };
-//       }
-//       //Save the new post to the database
-//       await newPost.save();
 
-//       //Send a response indicating successful creation
-//       res.status(201).json(newPost);
-
-
-//     }
-//   } catch (error) {
-//     //Handle errors
-//     console.error(error);
-//     res.status(500).json({ message: 'Internal server error!' });
-//   }
-// };
 
 export const addPost = async (req, res) => {
   try {
     let { title, description, category, requirements, method, amount, currency, cardNumber, cardExpiry, cardCVC, paypalEmail } = req.body;
-
-    if (!title || !description || !requirements) {
+    
+    if (!title || !description || !category || !requirements) {
       return res.status(400).json({ "msg": "Please fill all fields!" });
     }
 
@@ -81,7 +45,7 @@ export const addPost = async (req, res) => {
 
       await payment.save();
     }
-
+    
 
     // Split requirements into array
     requirements = requirements.split(", ");
@@ -111,6 +75,7 @@ export const addPost = async (req, res) => {
     res.status(500).json({ message: 'Internal server error!' });
   }
 };
+
 
 export const getPost = async (req, res) => {
   try {
@@ -155,7 +120,7 @@ export const getPost = async (req, res) => {
 
 export const getAllPosts = async (req, res) => {
   try {
-    const post = await Post.find();
+    const post = await Post.find().populate('owner');
     res.status(200).json(post);
   } catch (error) {
     console.error(error);
@@ -225,7 +190,7 @@ export const filterPosts = async (req, res) => {
     //console.log(filters)
 
     // Finding posts based on filters
-    const posts = await Post.find(filters);
+    const posts = await Post.find(filters).populate('owner');
 
     // Returning the result
     res.status(200).json(posts);

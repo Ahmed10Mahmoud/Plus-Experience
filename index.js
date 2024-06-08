@@ -21,7 +21,6 @@ import { corsOptions } from "./config/corsOptions.js";
 import bodyParser from 'body-parser'
 import { spawn } from 'child_process'
 import dotenv from 'dotenv';
-
 // Connect to DB
 connectDB();
 // Built in middlewares
@@ -43,7 +42,7 @@ app.use('/user', userRouter);
 app.use('/project', projectRouter);
 //app.use('/chat', chatRouter );
 app.use('/message', messageRouter);
-app.use('/payment', paymentRouter)
+app.use('/payment',paymentRouter)
 mongoose.connection.once('open', () => {
     console.log('Connected');
     app.listen(PORT, () => { console.log(`Server is running on PORT: ${PORT}`) });

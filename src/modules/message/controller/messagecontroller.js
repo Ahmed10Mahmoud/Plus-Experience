@@ -72,6 +72,7 @@ export const getMessages = async (req, res) => {
 
 export const getChat = async (req, res) => {
 	try {
+
 		const conversation = await Conversation.findById(req.params.id).populate('participants').populate('messages');
 		if (!conversation) {
 			return res.status(404).json({ message: 'Chat not found' });

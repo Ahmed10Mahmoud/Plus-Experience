@@ -13,6 +13,7 @@ router.get('/confirmEmail/:activationCode', isValid(activateSchema), activateAcc
 router.post('/login', isValid(loginSchema), login);
 //forget password
 router.patch('/forgetCode', sendForgetCode)
+
 // Logout
 router.patch('/resetPassword', resetPassword)
 router.post('/logout', logout);

@@ -47,7 +47,7 @@ const postSchema = new Schema({
   }
 }
   , {
-    timestamps: true
+    timestamps: false
   });
 
 const postModel = model("Post", postSchema);
