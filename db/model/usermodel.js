@@ -25,6 +25,7 @@ const userSchema = new Schema({
   },
   activationCode: String,
   forgetCode: String,
+  forgetCodeExpires: Date,
   img: {
     secure_url: String,
     public_id: String
@@ -62,6 +63,10 @@ const userSchema = new Schema({
   },
   acceptedPosts: {
     type: [String]
+  },
+  hasUsedFreePost: {
+    type: Boolean,
+    default: false,
   },
 }
   , {

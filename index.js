@@ -9,6 +9,8 @@ import adminRouter from './src/modules/user/admin.js';
 import clientRouter from './src/modules/user/client.js';
 import userRouter from './src/modules/user/user.js';
 import projectRouter from './src/modules/project/project.js';
+import paymentRouter from './src/modules/payment/payment.js'
+import reportRouter from './src/modules/report/report.js'
 //import chatRouter from './src/modules/chat/chat.js'
 import messageRouter from './src/modules/message/message.js'
 import modelRouter from './src/modules/ml/model.js'
@@ -30,9 +32,10 @@ app.use(bodyParser.json())
 app.use(cookieParser());
 dotenv.config();
 app.use(showMethod);  //Show method
-// app.use(spawn());
 // Our middlewares
+app.use('/report', reportRouter)
 app.use("/auth", Auth);
+app.use('/ml', modelRouter);
 app.use(verifyToken); //Verifing JWT
 app.use("/admin", adminRouter);
 app.use("/client", clientRouter);
@@ -40,7 +43,7 @@ app.use('/user', userRouter);
 app.use('/project', projectRouter);
 //app.use('/chat', chatRouter );
 app.use('/message', messageRouter);
-app.use('/ml', modelRouter);
+app.use('/payment', paymentRouter)
 mongoose.connection.once('open', () => {
     console.log('Connected');
     app.listen(PORT, () => { console.log(`Server is running on PORT: ${PORT}`) });
