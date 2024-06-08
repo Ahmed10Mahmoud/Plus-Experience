@@ -12,18 +12,25 @@ import {
     modifySkill,
     relatedPost,
     showProfile,
-    //showProfile2,
+    showProfile2,
     updateProfile,
-    uploadImage
+    uploadImage,
+    userById
 } from "./controller/usercontroller.js";
 
 //Show profile , show user 
 router.get('/', verifyRoles(rolesList.Admin, rolesList.Client, rolesList.Freelancer), showProfile);
-//router.get('/:id', verifyRoles(rolesList.Admin, rolesList.Client, rolesList.Freelancer), showProfile2);
+router.get('/:id', verifyRoles(rolesList.Admin, rolesList.Client, rolesList.Freelancer), showProfile2);
 
 //Update profile , update user , set profile
 router.patch('/update', verifyRoles(rolesList.Admin, rolesList.Freelancer), updateProfile);
-
+//Upload img
+router.patch(
+    '/image',
+    verifyRoles(rolesList.Freelancer, rolesList.Admin, rolesList.Client),
+    upload.single('file'),
+    verifyFile(FILE_LIST.image),
+    uploadImage);
 //Skills modification
 router.patch('/skill/add', verifyRoles(rolesList.Admin, rolesList.Freelancer), addSkill);
 router.patch('/skill/delete', verifyRoles(rolesList.Admin, rolesList.Freelancer), deleteSkill);
@@ -33,4 +40,5 @@ router.patch('/skill/update', verifyRoles(rolesList.Admin, rolesList.Freelancer)
 router.patch('/apply/:id', verifyRoles(rolesList.Freelancer), apply);
 //related posts 
 router.get('/relatedPost', verifyRoles(rolesList.Freelancer), relatedPost)
+router.get('/:id', verifyRoles(rolesList.Admin, rolesList.Client, rolesList.Freelancer), userById);
 export default router;

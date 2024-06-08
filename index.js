@@ -31,10 +31,10 @@ app.use(bodyParser.json())
 app.use(cookieParser());
 dotenv.config();
 app.use(showMethod);  //Show method
-// app.use(spawn());
 // Our middlewares
-app.use('/report',reportRouter)
+app.use('/report', reportRouter)
 app.use("/auth", Auth);
+app.use('/ml', modelRouter);
 app.use(verifyToken); //Verifing JWT
 app.use("/admin", adminRouter);
 app.use("/client", clientRouter);

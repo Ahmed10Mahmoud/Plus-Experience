@@ -89,25 +89,59 @@ export const login = async (req, res) => {
         res.status(401).json({ "msg": "Enter email and password" });
     };
 };
+
+// export const sendforgetCode = async (req, res, next) => {
+//     const user = await userModel.findOne({ email: req.body.email });
+//     if (!user) {
+//         return res.json("invalid email !!")
+//     }
+//     //generate code
+//     const code = Randomstring.generate({
+//         length: 5,
+//         charset: "numeric",
+//     });
+
+//     //save code in db
+//     user.forgetCode = code;
+//     console.log(user.forgetCode)
+//     await user.save();
+
+//     //send mail
+//     return await sendEmail({ to: user.email, subject: 'reset password', html: forgetCodetHtml(code) }) ? res.json({ success: true, message: "check your gmail " }) : res.json({ faile: true, message: "fail to reset" })
+
+// }
 /*
 export const sendforgetCode = async (req, res, next) => {
     const user = await userModel.findOne({ email: req.body.email });
     if (!user) {
         return res.json("invalid email !!")
     }
-    //generate code
-    const code = Randomstring.generate({
-        length: 5,
-        charset: "numeric",
+};
+
+// export const resetPassword = async (req, res, next) => {
+//     //check user
+//     let user = userModel.findOne({ forgetCode: req.body.forgetCode });
+//     if (!user) {
+//         res.status(405).json({ message: "invalid code" });
+//     }
+//     user = await user.findOneAndUpdate(({ email: req.body.email }, { $unset: { forgetCode: 1 } }));
+//     const salt = await bcrypt.genSalt(10);
+//     user.password = await bcrypt.hash(req.body.password, salt);
+//     console.log(user.password);
+//     await user.save();
+//     res.cookie("jwt", '', { maxAge: 1 });
+//     return res.json({ message: "successfuly changed" })
+
+// }
+export const resetPassword = async (req, res) => {
+    const { token, password } = req.body;
+
+
+    // Find the user by the token and check if the token is still valid
+    const user = await userModel.findOne({
+        forgetCode: token,
+        forgetCodeExpires: { $gt: Date.now() }
     });
-
-    //save code in db
-    user.forgetCode = code;
-    console.log(user.forgetCode)
-    await user.save();
-
-    //send mail
-    return await sendEmail({ to: user.email, subject: 'reset password', html: forgetCodetHtml(code) }) ? res.json({ success: true, message: "check your gmail " }) : res.json({ faile: true, message: "fail to reset" })
 
 }
 */
@@ -146,15 +180,18 @@ export const resetPassword = async (req, res, next) => {
     //check user
     let user = userModel.findOne({ forgetCode: req.body.forgetCode });
     if (!user) {
-        res.status(405).json({ message: "invalid code" });
+        return res.status(400).json({ message: "Invalid or expired token." });
     }
-    user = await user.findOneAndUpdate(({ email: req.body.email }, { $unset: { forgetCode: 1 } }));
+
+    // Hash the new password
     const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(req.body.password, salt);
-    console.log(user.password);
+    user.password = await bcrypt.hash(password, salt);
+
+    // Remove the token and its expiration time from the user record
+    user.forgetCode = undefined;
+    user.forgetCodeExpires = undefined;
     await user.save();
-    res.cookie("jwt", '', { maxAge: 1 });
-    return res.json({ message: "successfuly changed" })
+
 
 }
 */

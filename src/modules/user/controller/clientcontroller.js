@@ -3,46 +3,8 @@ import cloudinary from "../../../../config/cloudinary.js";
 import postModel from '../../../../db/model/postmodel.js';
 import userModel from '../../../../db/model/usermodel.js';
 import rateModel from '../../../../db/model/rate.model.js';
-import Payment from "../../../../db/model/Payment.js";
-/*
-export const addPost = async (req, res) => {
-  try {
-    // Extract data from the request body
-    let { title, description, category, requirements } = req.body;
-    console.log({ title, description, category, requirements })
-    // if (!title || !description || !category || !requirements) {
-    //   res.status(400).json({ "msg": "Please fill all fields!" });
-    // }
-    // else {
-      //Split requirements into array
-      requirements = requirements.split(", ");
-      //Create a new post instance with extracted data
-      const newPost = new Post({
-        title,
-        description,
-        category,
-        requirements,
-        owner: req.id
-      });
-      if (req.file) {
-        const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: `Posts/${newPost.id}/Cover` });
-        newPost.cover = { secure_url, public_id };
-      }
-      //Save the new post to the database
-      await newPost.save();
+import { spawn } from "child_process";
 
-      //Send a response indicating successful creation
-      res.status(201).json(newPost);
-
-
-    
-  } catch (error) {
-    //Handle errors
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error!' });
-  }
-};
-*/
 
 
 export const addPost = async (req, res) => {
@@ -118,8 +80,38 @@ export const addPost = async (req, res) => {
 export const getPost = async (req, res) => {
   try {
     const postId = req.params.postId;
-    const post = await Post.findById(postId);
-    res.status(200).json(post);
+    console.log('\nYou are in the Time Estimation api\n');
+    var result; // data from script
+    var terms = [];
+    const posts = await Post.findById(postId);
+    terms[0] = await posts.title;
+    terms[1] = await posts.description;
+    terms[2] = await posts.requirements.toString();
+    console.log(terms);
+    // Define the Python script you want to execute
+    const pythonPath = 'D:\\Plus-Experience\\Plus-Experience\\ML\\projectduration.py';
+
+    // Spawn a new Python process
+    const python = await spawn('py', [pythonPath, terms]);
+
+    // Listen for stdout data from the Python process
+    python.stdout.on('data', async function (data) {
+      result = await data.toString();
+    });
+
+    // Listen for stderr data from the Python process
+    python.stderr.on('data', (data) => {
+      console.error(`Error: ${data}`);
+    });
+
+    // Listen for Python process exit event
+    python.on('close', async (code) => {
+      console.log(`Code: ${code}`);
+      console.log("\n\n########The Result", result)
+      res.status(200).json({ "post": posts, "Estimated_Time": result.slice(0, -3) });
+
+    });
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error!' });
